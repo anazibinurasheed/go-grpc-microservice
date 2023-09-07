@@ -1,0 +1,4 @@
+*.txt
+*.go
+*.env
+*.proto
