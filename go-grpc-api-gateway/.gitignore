@@ -2,3 +2,6 @@
 *.go
 *.env
 *.proto
+*.mod
+*.sum
+Makefile
