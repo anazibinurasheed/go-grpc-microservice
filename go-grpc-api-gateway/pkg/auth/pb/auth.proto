@@ -1,10 +1,23 @@
 
+/*
+The proto3 syntax is different from the proto2 syntax in several ways
+
+The code generated from a .proto file depends on which syntax is used
+
+If you don't specify a syntax, the default is proto2.
+*/
+
 syntax= "proto3";
+
+// Defines the package name as auth
 
 package auth;
 
+// Tells the protobuf compiler to generate Go code for this definition
+
 option go_package = "./pkg/auth/pb";
 
+//Defining rpc methods
 service AuthService {
 rpc Register(RegisterRequest) returns (RegisterResponse){}
 rpc Login(LoginRequest) returns (LoginResponse){}
@@ -38,7 +51,9 @@ string token = 3;
 
 // Validate
 
-message ValidateRequest { string token = 1; }
+message ValidateRequest {
+     string token = 1; 
+}
 
 
 message ValidateResponse {

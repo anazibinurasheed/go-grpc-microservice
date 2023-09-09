@@ -14,8 +14,6 @@ type ServiceClient struct {
 
 func InitServiceClient(c *config.Config) pb.AuthServiceClient {
 	//using WithInsecure() because no SSL running
-	/*
-		grpc.WithInsecure is deprecated: use WithTransportCredentials and insecure.NewCredentials() instead. Will be supported throughout 1.x.deprecated(default)*/
 
 	cc, err := grpc.Dial(c.AuthSvcUrl, grpc.WithInsecure())
 	if err != nil {
