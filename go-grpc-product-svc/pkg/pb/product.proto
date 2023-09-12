@@ -2,7 +2,7 @@ syntax= "proto3";
 
 package product;
 
-option go_package= "./pkg/pb";
+option go_package= "./pkg/pb"; //import path
 
 
 service ProductService{
