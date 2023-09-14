@@ -8,6 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// Token auth methods implemented on JwtWrapper
 type JwtWrapper struct {
 	SecretKey       string
 	Issuer          string
@@ -53,10 +54,12 @@ func (w *JwtWrapper) ValidateToken(signedToken string) (claims *jwtClaims, err e
 	if !ok {
 		return nil, errors.New("couldn't parse claims")
 	}
+
 	if claims.ExpiresAt < time.Now().Local().Unix() {
 		return nil, errors.New("JWT is expired")
 
 	}
+
 	return claims, nil
 
 }

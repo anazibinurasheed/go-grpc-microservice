@@ -15,7 +15,7 @@ func main() {
 	c, err := config.LoadConfig()
 
 	if err != nil {
-		log.Fatalln("Failed at config", err)
+		log.Fatalln("Failed to load config", err)
 	}
 
 	r := gin.Default()
