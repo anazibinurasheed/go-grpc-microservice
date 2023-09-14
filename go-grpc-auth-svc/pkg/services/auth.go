@@ -10,6 +10,7 @@ import (
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-auth-svc/pkg/utils"
 )
 
+// Server is a struct containing DB as H and JwtWrapper as Jwt
 type Server struct {
 	H   db.Handler
 	Jwt utils.JwtWrapper
@@ -28,7 +29,15 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 	}
 
 	user.Email = req.Email
-	user.Password = utils.HashPassword(req.Password)
+	var ok bool
+	user.Password, ok = utils.HashPassword(req.Password)
+
+	if !ok {
+		return &pb.RegisterResponse{
+			Status: http.StatusInternalServerError,
+			Error:  "Failed to hash password",
+		}, nil
+	}
 
 	s.H.DB.Create(&user)
 	return &pb.RegisterResponse{

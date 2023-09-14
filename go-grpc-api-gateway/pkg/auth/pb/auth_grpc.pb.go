@@ -27,10 +27,12 @@ type AuthServiceClient interface {
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 }
 
+// A struct that implements the RPC api methods
 type authServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
+// Takes grpc.ClientConnInterface returning from the grpc.Dial and give as the interface with having methods .
 func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
 }

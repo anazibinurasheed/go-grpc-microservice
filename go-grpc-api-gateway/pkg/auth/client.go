@@ -12,6 +12,7 @@ type ServiceClient struct {
 	Client pb.AuthServiceClient
 }
 
+// It will give as the interface that contains the api with initializing the connection from the generated code using the address of the service
 func InitServiceClient(c *config.Config) pb.AuthServiceClient {
 	//using WithInsecure() because no SSL running
 
