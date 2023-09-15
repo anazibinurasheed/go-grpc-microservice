@@ -2,11 +2,10 @@ package routes
 
 import (
 	"context"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-api-gateway/pkg/product/pb"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
 )
 
 type CreateProductRequestBody struct {
@@ -15,25 +14,28 @@ type CreateProductRequestBody struct {
 	Price int64  `json:"price"`
 }
 
-func CreateProduct(ctx *gin.Context, c pb.ProductServiceClient) {
+func CreateProduct(c *gin.Context, psc pb.ProductServiceClient) {
 	body := CreateProductRequestBody{}
 
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	if err := c.BindJSON(&body); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	res, err := c.CreateProduct(context.Background(), &pb.CreateProductRequest{
+	ctx, cancel := context.WithTimeout(c, 2*time.Second)
+	defer cancel()
+
+	res, err := psc.CreateProduct(ctx, &pb.CreateProductRequest{
 		Name:  body.Name,
 		Stock: body.Stock,
 		Price: body.Price,
 	})
 
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadGateway, err)
+		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, &res)
+	c.JSON(http.StatusCreated, &res)
 
 }

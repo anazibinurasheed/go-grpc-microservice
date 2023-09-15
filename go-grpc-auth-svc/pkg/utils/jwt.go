@@ -2,23 +2,24 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-auth-svc/pkg/models"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
+
+type jwtClaims struct {
+	jwt.StandardClaims
+	Id    int64
+	Email string
+}
 
 // Token auth methods implemented on JwtWrapper
 type JwtWrapper struct {
 	SecretKey       string
 	Issuer          string
 	ExpirationHours int64
-}
-
-type jwtClaims struct {
-	jwt.StandardClaims
-	Id    int64
-	Email string
 }
 
 func (w *JwtWrapper) GenerateToken(user models.User) (signedToken string, err error) {
@@ -31,10 +32,11 @@ func (w *JwtWrapper) GenerateToken(user models.User) (signedToken string, err er
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	signedToken, err = token.SignedString([]byte(w.SecretKey))
 	if err != nil {
+		fmt.Println(err)
 		return "", err
 	}
 	return signedToken, nil
@@ -47,15 +49,18 @@ func (w *JwtWrapper) ValidateToken(signedToken string) (claims *jwtClaims, err e
 		})
 
 	if err != nil {
+		fmt.Println("u1")
 		return
 	}
 
 	claims, ok := token.Claims.(*jwtClaims)
 	if !ok {
+		fmt.Println("u2")
 		return nil, errors.New("couldn't parse claims")
 	}
 
 	if claims.ExpiresAt < time.Now().Local().Unix() {
+		fmt.Println("u3")
 		return nil, errors.New("JWT is expired")
 
 	}

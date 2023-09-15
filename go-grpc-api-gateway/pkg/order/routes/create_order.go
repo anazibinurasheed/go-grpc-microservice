@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-api-gateway/pkg/order/pb"
 	"github.com/gin-gonic/gin"
@@ -13,25 +14,31 @@ type CreateOrderRequestBody struct {
 	Quantity  int64 `json:"quantity"`
 }
 
-func CreateOrder(ctx *gin.Context, c pb.OrderServiceClient) {
+func CreateOrder(c *gin.Context, osc pb.OrderServiceClient) {
+
 	body := CreateOrderRequestBody{}
 
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	if err := c.BindJSON(&body); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	userId, _ := ctx.Get("userId")
+	userId, _ := c.Get("userId")
 
-	res, err := c.CreateOrder(context.Background(), &pb.CreateOrderRequest{
+	ctx, cancel := context.WithTimeout(c, 2*time.Second)
+	defer cancel()
+
+	res, err := osc.CreateOrder(ctx, &pb.CreateOrderRequest{
 
 		ProductId: body.ProductId,
 		Quantity:  body.Quantity,
 		UserId:    userId.(int64),
 	})
+
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadGateway, err)
+		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
-	ctx.JSON(http.StatusCreated, &res)
+
+	c.JSON(http.StatusCreated, &res)
 }

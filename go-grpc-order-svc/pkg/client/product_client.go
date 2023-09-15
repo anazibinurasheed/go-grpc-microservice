@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-order-svc/pkg/pb"
 	"google.golang.org/grpc"
@@ -13,7 +14,11 @@ type ProductServiceClient struct {
 }
 
 func InitProductServiceClient(url string) ProductServiceClient {
-	cc, err := grpc.Dial(url, grpc.WithInsecure())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cc, err := grpc.DialContext(ctx, url, grpc.WithInsecure())
 
 	if err != nil {
 		fmt.Println("Could not connect:", err)

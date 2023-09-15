@@ -4,24 +4,27 @@ import (
 	"context"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
+	"time"
 
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-api-gateway/pkg/product/pb"
+	"github.com/gin-gonic/gin"
 )
 
-func FindOne(ctx *gin.Context, c pb.ProductServiceClient) {
-	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 32)
+func FindOne(c *gin.Context, psc pb.ProductServiceClient) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 32)
 
-	res, err := c.FindOne(context.Background(), &pb.FindOneRequest{
+	ctx, cancel := context.WithTimeout(c, 2*time.Second)
+	defer cancel()
+
+	res, err := psc.FindOne(ctx, &pb.FindOneRequest{
 		Id: int64(id),
 	})
 
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadGateway, err)
+		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, &res)
+	c.JSON(http.StatusCreated, &res)
 
 }
