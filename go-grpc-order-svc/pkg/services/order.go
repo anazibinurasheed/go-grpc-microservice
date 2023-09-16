@@ -38,7 +38,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 
 	s.H.DB.Create(&order)
 
-	res, err := s.ProductSvc.DecreaseStock(req.ProductId, order.Id)
+	res, err := s.ProductSvc.DecreaseStock(req.ProductId, order.Id, req.Quantity)
 
 	if err != nil {
 		return &pb.CreateOrderResponse{

@@ -10,6 +10,7 @@ import (
 
 func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) {
 	a := auth.InitAuthMiddleware(authSvc)
+
 	svc := &ServiceClient{
 		Client: InitServiceClient(c),
 	}

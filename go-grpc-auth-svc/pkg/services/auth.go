@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/anazibinurasheed/go-grpc-microservice/go-grpc-auth-svc/pkg/db"
@@ -65,7 +66,14 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		}, nil
 	}
 
-	token, _ := s.Jwt.GenerateToken(user)
+	token, err := s.Jwt.GenerateToken(user)
+	if err != nil {
+		return &pb.LoginResponse{
+			Status: http.StatusBadGateway,
+			Error:  "Failed to generate tokens",
+		}, nil
+	}
+	fmt.Println(token)
 
 	return &pb.LoginResponse{
 		Status: http.StatusOK,
@@ -77,15 +85,20 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 	claims, err := s.Jwt.ValidateToken(req.Token)
 
 	if err != nil {
+		fmt.Println(err)
 		return &pb.ValidateResponse{
 			Status: http.StatusBadRequest,
 			Error:  err.Error(),
 		}, nil
 	}
+
 	var user models.User
 
 	if result := s.H.DB.Where(&models.User{Email: claims.Email}).First(&user); result.Error != nil {
+		fmt.Println(result.Error, "result.Error")
+
 		return &pb.ValidateResponse{
+
 			Status: http.StatusNotFound,
 			Error:  "User not found",
 		}, nil

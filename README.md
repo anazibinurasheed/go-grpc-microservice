@@ -5,9 +5,9 @@ Go-grpc-microservice
 
 ## Overview
 
-A small e-commerce system. Developed 3 Microservices and 1 API Gateway which handles incoming HTTP requests. HTTP requests will be forwarded to these Microservices by gRPC.
+An example of small e-commerce system using Microservice Architecture. Developed 3 Microservices and 1 API Gateway which handles incoming HTTP requests. The HTTP requests will be forwarded to these Microservices using gRPC.
 ##
-## Note: Its a monorepo contains 4 standalone projects.
+## Note: It's a Monorepo contains 1 api-gateway and 3 services.
 ##
 
 ## Application Infrastructure

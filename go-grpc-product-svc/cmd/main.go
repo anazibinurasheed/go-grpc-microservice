@@ -26,7 +26,7 @@ func main() {
 	lis, err := net.Listen("tcp", c.Port)
 
 	if err != nil {
-		log.Fatalln("failed to listing:", err)
+		log.Fatalln("failed to listen:", err)
 	}
 
 	fmt.Println("Product Svc on:", c.Port)
