@@ -37,7 +37,9 @@ message FindOneData {
     int64 price = 5;
 }
 
-message FindOneRequest {int64 id = 1; }
+message FindOneRequest {
+    int64 id = 1;
+}
 
 message FindOneResponse {
     int64 status = 1;

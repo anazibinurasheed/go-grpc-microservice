@@ -29,7 +29,6 @@ func (a *AuthMiddlewareConfig) AuthRequired(c *gin.Context) {
 		return
 	}
 
-	//After this line, the token variable will hold a slice of strings where the first element (index 0) is "Bearer " and the second element (index 1) is the actual token.
 	token := strings.Split(authorization, "Bearer")
 	if len(token) < 2 {
 		fmt.Println("2")

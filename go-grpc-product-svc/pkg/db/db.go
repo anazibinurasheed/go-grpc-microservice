@@ -21,7 +21,6 @@ func Init(url string) Handler {
 
 	db.AutoMigrate(
 		&models.Product{},
-		&models.StockDecreaseLog{},
 	)
 
 	return Handler{DB: db}
